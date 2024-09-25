@@ -1,0 +1,13 @@
+/backend/node_modules
+/frontned/node_modules
+/frontned/build
+/frontend/.env
+/frontend/.vscode
+/frontend/.DS_Store
+/frontend/.gitignore
+/frontend/.angular
+/backend/.env
+/backend/.vscode
+/backend/.DS_Store
+/backend/.gitignore
+/backend/build
