@@ -1,0 +1,35 @@
+<app-card>
+    <article>
+        <h2> {{ task.name}} </h2>
+        <time> <span style="color: white;"> Started at: </span> {{ task.createdAt | date: 'fullDate' }} </time>
+        @if (task.updatedAt) {
+        <time> <span style="color: white;"> Updated at: </span> {{ task.updatedAt | date: 'fullDate' }} </time>
+        }
+        @if (task.endedAt) {
+        <time> <span style="color: white;"> Ended at: </span> {{ task.endedAt | date: 'fullDate' }} </time>
+        }
+        <h4> Description </h4>
+
+        <textarea name="description" id="description" [(ngModel)]="task.description" rows="4"
+            placeholder="Task description ..." (input)="onDescriptionChange(task.description)"></textarea>
+
+        <label for="status-select">Change Status:</label>
+
+        <div class="radio-container">
+            @for (status of statusOptions; track $index) {
+            <label class="radio-item">
+                <input type="radio" [value]="status" [checked]="task.status === status"
+                    (change)="onStatusChange(status)">
+                {{ status }}
+            </label>
+            }
+        </div>
+
+        <p style="display: flex; justify-content: center;">
+            <button style="border: 1px solid white; border-radius: 10px;" *ngIf="showButton" (click)="onCompleted()">Save Changes</button>
+        </p>
+        <p style="display: flex; justify-content: center;">
+            <button style="border: 1px solid white; border-radius: 10px;" (click)="onDeleted()">Delete</button>
+        </p>
+    </article>
+</app-card>

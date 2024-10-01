@@ -6,7 +6,7 @@ const dateFormatter = () => moment().format('YYYY-MM-DD HH:mm:ss');
 export const UpdateTaskDto = z.object({
     nameUser    : z.string().optional(),
     name        : z.string().optional(),
-    updatedAt   : z.string().default(dateFormatter()),
+    updatedAt   : z.string().optional().default(() => dateFormatter()),
     end         : z.string().optional(),
     description : z.string().optional(),
     status      : z.enum(['todo', 'inprogress', 'done']).optional(),

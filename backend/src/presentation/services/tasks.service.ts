@@ -9,21 +9,22 @@ export class TaskService {
         try {
             const { page, limit } = paginationDto;
             const tasks = await TaskModel.find()
-            .skip((page - 1) * limit)
-            .limit(limit);
-            
+                .skip((page - 1) * limit)
+                .limit(limit);
+
             return {
                 page,
                 limit,
                 total: tasks.length,
-                next    : `/api/categories?page=${ ( page + 1 ) }&limit=${ limit }`,
-                prev    : (page - 1 > 0) ? `/api/categories?page=${ ( page - 1 ) }&limit=${ limit }`: null,
-                tasks   : tasks.map(task => ({
-                    idUser      : task.id,
-                    name        : task.name,
-                    description : task.description,
-                    createdAt   : task.start,
-                    status      : task.status
+                next: `/api/categories?page=${(page + 1)}&limit=${limit}`,
+                prev: (page - 1 > 0) ? `/api/categories?page=${(page - 1)}&limit=${limit}` : null,
+                tasks: tasks.map(task => ({
+                    idUser: task.id,
+                    name: task.name,
+                    nameUser: task.nameUser,
+                    description: task.description,
+                    createdAt: task.start,
+                    status: task.status
                 }))
             }
         } catch (error) {
@@ -31,19 +32,28 @@ export class TaskService {
         }
     }
 
-    public async getTaskById(name: string) {
-        try {
-            const user = await UserModel.findOne({ name });
-            if (!user) throw Error('User not found');
-            const task = await TaskModel.findOne({ idUser: user?._id });
-            if (!task) throw Error('Task not found');
-            
-            return {
-                ...task,
-            }
+    public async getTasksByUserName(name: string) {
+        const user = await UserModel.findOne({ name });
+        if (!user) throw Error('User not found');
 
-        } catch (error) {
-            throw Error('Internal server error');
+        console.log(user);
+        const task = await TaskModel.find({ nameUser: name });
+        if (!task) throw Error('Task not found');
+
+
+        return {
+            message: 'Tasks found',
+            tasks: task.map(task => ({
+                _id: task._id,
+                idUser: task.id,
+                nameUser: task.nameUser,
+                name: task.name,
+                status: task.status,
+                description: task.description,
+                createdAt: task.start,
+                endedAt: task.end ? task.end : null,
+                updatedAt: task.updatedAt ? task.updatedAt : null
+            }))
         }
     }
 
@@ -55,11 +65,13 @@ export class TaskService {
         return {
             message: 'Task created successfully',
             task: {
-                idUser      : taskCreated.id,
-                name        : taskCreated.name,
-                description : taskCreated.description,
-                createdAt   : taskCreated.start,
-                status      : taskCreated.status
+                _id: taskCreated._id,
+                idUser: taskCreated.id,
+                nameUser: taskCreated.nameUser,
+                name: taskCreated.name,
+                description: taskCreated.description,
+                createdAt: taskCreated.start,
+                status: taskCreated.status
             },
         }
     }
@@ -75,13 +87,13 @@ export class TaskService {
         return {
             message: 'Task updated successfully',
             updatedTask: {
-                idUser      : updatedTask.id,
-                name        : updatedTask.name,
-                description : updatedTask.description,
-                createdAt   : updatedTask.start,
-                update      : updatedTask.updatedAt,
-                end         : updatedTask.end ? updatedTask.end : null,
-                status      : updatedTask.status
+                idUser: updatedTask.id,
+                name: updatedTask.name,
+                description: updatedTask.description,
+                createdAt: updatedTask.start,
+                update: updatedTask.updatedAt,
+                end: updatedTask.end ? updatedTask.end : null,
+                status: updatedTask.status
             },
         }
     }
@@ -90,14 +102,17 @@ export class TaskService {
         const task = await TaskModel.findOneAndDelete(
             { nameUser: nameUser, name: nameTask });
         if (!task) throw Error('Task not found');
+        const user = await UserModel.findOne({ name: nameUser });
+        user!.tasksAsigned = user!.tasksAsigned.filter(t => t._id.toString() !== task._id.toString());
+        await user!.save();
         return {
             message: 'Task deleted successfully',
             task: {
-                idUser      : task.id,
-                name        : task.name,
-                description : task.description,
-                createdAt   : task.start,
-                status      : task.status
+                idUser: task.id,
+                name: task.name,
+                description: task.description,
+                createdAt: task.start,
+                status: task.status
             },
         }
     }

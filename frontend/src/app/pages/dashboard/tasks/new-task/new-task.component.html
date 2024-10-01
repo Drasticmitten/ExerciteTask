@@ -1,0 +1,52 @@
+<div class="backdrop" (click)="onClose()"></div>
+
+<dialog open>
+    <h2>Add Task to {{name}} </h2>
+    <form [formGroup]="new_tasks" (ngSubmit)="onSubmit()">
+        <p>
+            <label for="title" style="margin-bottom: 2rem;">Title</label>
+            <input type="text" formControlName="name" id="title">
+
+            <span style="color: red;"
+                *ngIf="nameControl?.invalid && nameControl?.touched && nameControl?.errors?.['required']">
+                Name of task is required
+            </span>
+        </p>
+
+        <p>
+            <label for="status">Status </label>
+            <span id="statusOptions">
+                <label for="todo">Todo</label>
+                <input type="radio" formControlName="status" value="todo" id="done">
+
+                <label for="progress">In Progress</label>
+                <input type="radio" formControlName="status" value="progress" id="progress">
+
+                <label for="pending">Pending</label>
+                <input type="radio" formControlName="status" value="pending" id="pending">
+            </span>
+
+            <span *ngIf="statusControl?.invalid && statusControl?.touched">
+                <span style="color: red;" *ngIf="statusControl?.errors?.['required']">
+                    Status of task is required
+                </span>
+            </span>
+        </p>
+
+        <p>
+            <label for="description" style="margin-bottom: 2rem;">Description Task</label>
+            <textarea formControlName="description" id="description" rows="5"></textarea>
+
+            <span *ngIf="descriptionControl?.invalid && descriptionControl?.touched">
+                <span style="color: red;" *ngIf="descriptionControl?.errors?.['required']">
+                    Description of task is required
+                </span>
+            </span>
+        </p>
+
+        <p class="actions">
+            <button type="button" (click)="onClose()">Cancel</button>
+            <button type="submit">Create</button>
+        </p>
+    </form>
+</dialog>

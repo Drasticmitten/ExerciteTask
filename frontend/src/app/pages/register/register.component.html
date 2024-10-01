@@ -1,14 +1,39 @@
-<div id="container-login">
-    <div id="login">
-        <h2>Login</h2>
-        <form (ngSubmit)="onSubmit()" #loginForm="ngForm" id="form-login" action="submit" method="POST">
+<div id="container-register">
+    <div id="register">
+        <h2>Register</h2>
+        <form (click)="clearMessageError()" (ngSubmit)="onSubmit()" [formGroup]="registerForm" id="form-register">
             <label for="username">Username</label>
-            <input type="text" [(ngModel)]="username" id="username" placeholder="Username" name="username" required>
+            <input type="text" formControlName="name" id="username" placeholder="Username" name="username" required>
+            <div *ngIf="nameControl?.invalid && nameControl?.touched">
+                <span style="color: red;" *ngIf="nameControl?.errors?.['required']">Username is required</span>
+            </div>
+
+            <label for="email">Email</label>
+            <input type="email" formControlName="email" id="email" placeholder="Email" name="email" required>
+            <div *ngIf="emailControl?.invalid && emailControl?.touched">
+                <span style="color: red;" *ngIf="emailControl?.errors?.['required']">Email is required</span>
+                <span style="color: red;" *ngIf="emailControl?.errors?.['email']">Email is invalid</span>
+            </div>
 
             <label for="password">Password</label>
-            <input type="password" [(ngModel)]="password" id="password" placeholder="Password" name="password" required>
+            <input type="password" formControlName="password" id="password" placeholder="Password" name="password" required>
+            <div *ngIf="passwordControl?.invalid && passwordControl?.touched">
+                <span style="color: red;" *ngIf="passwordControl?.errors?.['required']">Password is required</span>
+                <span style="color: red;" *ngIf="passwordControl?.errors?.['minlength']">Password must be at least 6 characters</span>
+            </div>
 
-            <button type="submit" [disabled]="!loginForm.valid">Login</button>
+            <label for="passwordConfirmation">Password Confirmation</label>
+            <input type="password" formControlName="passwordConfirmation" id="passwordConfirmation" placeholder="Password confirmation" name="passwordConfirmation" required>
+            <div style="color: red;" *ngIf="registerForm.errors?.['mismatch'] && registerForm.get('passwordConfirmation')?.touched">
+                <span>Passwords do not match</span>
+            </div>
+
+            <div *ngIf="errorMessage" class="error-message">
+                <span style="color: red;" >{{ errorMessage }}</span>
+            </div>
+
+            <button type="submit" [disabled]="registerForm.invalid">Register</button>
+            <a style="text-decoration: none;" href="/login">Sign up</a>
         </form>
     </div>
 </div>

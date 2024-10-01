@@ -1,14 +1,31 @@
 <div id="container-login">
     <div id="login">
         <h2>Login</h2>
-        <form (ngSubmit)="onSubmit()" #loginForm="ngForm" id="form-login" action="submit" method="POST">
+        <form (click)="clearMessageError()" (ngSubmit)="onSubmit()" [formGroup]="loginForm" id="form-login">
             <label for="username">Username</label>
-            <input type="text" [(ngModel)]="username" id="username" placeholder="Username" name="username" required>
+            <input type="text" formControlName="name" id="username" placeholder="Username" name="username" required>
+            <div *ngIf="nameControl?.invalid && nameControl?.touched">
+                <span style="color: red;" *ngIf="nameControl?.errors?.['required']">Username is required</span>
+            </div>
 
             <label for="password">Password</label>
-            <input type="password" [(ngModel)]="password" id="password" placeholder="Password" name="password" required>
+            <input type="password" formControlName="password" id="password" placeholder="Password" name="password" required>
+            <div *ngIf="passwordControl?.invalid && passwordControl?.touched">
+                <span style="color: red;" *ngIf="passwordControl?.errors?.['required']">Password is required</span>
+                <span style="color: red;" *ngIf="passwordControl?.errors?.['minlength']">Password must be at least 6 characters</span>
+            </div>
 
-            <button type="submit" [disabled]="!loginForm.valid">Login</button>
+            <div *ngIf="statusMessage" class="status-message">
+                <span style="color: green;" >{{ statusMessage }}</span>
+            </div>
+
+            <div *ngIf="errorMessage" class="error-message">
+                <span style="color: red;" >{{ errorMessage }}</span>
+            </div>
+
+            
+            <button type="submit" [disabled]="loginForm.invalid">Login</button>
+            <a style="text-decoration: none;" href="/register">Don't you have an account ? Register</a>
         </form>
     </div>
 </div>

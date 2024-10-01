@@ -7,7 +7,8 @@ export class AuthMiddleware {
 
 
     static async validateJWT(req: Request, res: Response, next: NextFunction) {
-
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
         const token = req.cookies.token;
         if (!token) return res.status(401).json({ error: 'UnAuthorized' });
 

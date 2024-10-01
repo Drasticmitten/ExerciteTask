@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const userSchema = new Schema({
     name: {
@@ -14,7 +14,12 @@ const userSchema = new Schema({
     password: {
         type        : String,
         required    : true
-    }
+    },
+    tasksAsigned: [{
+        type        : Schema.Types.ObjectId,
+        ref         : 'Task',
+    }]
 });
 
-export const UserModel = model('User', userSchema);
+
+export const UserModel = mongoose.model('User', userSchema);

@@ -22,15 +22,19 @@ export class AuthController {
         return res.status(500).json({ error: 'Internal server error' });
     }
 
-    registerUser = async (req: Request, res: Response) => {
+    validateToken = (req: Request, res: Response) => {
+        res.status(200).json({ message: 'Token is valid' });
+    }
+
+    registerUser = (req: Request, res: Response) => {
         try {
             const registerDto = RegisterDto.parse(req.body);
 
             this.authService.register(registerDto)
                 .then(({ user, token }) => {
-                    res.cookie('token', token, { 
-                        httpOnly: true , 
-                        secure: true, 
+                    res.cookie('token', token, {
+                        httpOnly: true,
+                        secure: true,
                         sameSite: 'none',
                         maxAge: 1000 * 60 * 60 * 24 * 7,
                     });
@@ -60,7 +64,7 @@ export class AuthController {
 
     logoutUser = (req: Request, res: Response) => {
         try {
-            res .clearCookie('token')
+            res.clearCookie('token')
                 .status(200)
                 .json({ message: 'Logout successful' });
         } catch (error) {

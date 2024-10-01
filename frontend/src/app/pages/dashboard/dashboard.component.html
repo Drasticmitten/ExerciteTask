@@ -1,0 +1,25 @@
+<header (click)="unSelectUser()">
+    <h1>Hello {{ userInfo.name }}</h1>
+
+    <div (click)="logout()" style="display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+        <img style="background: transparent;" src="assets/logout.jpg" alt="logout" width="30px">
+        <a>Logout</a>
+    </div>
+
+</header>
+<main>
+    <ul id="usersContainer">
+        @for (user of usersInfo; track $index) {
+        <li (click)="userSelectedHandler(user.name)" [class.selected]="user.name === userSelected">
+            {{ user.name }}
+        </li>
+        }
+    </ul>
+
+    <ul id="tasksContainer">
+        @if (userSelected) {
+        <app-tasks [name]="selectedUserInfo!.name" [userId]="selectedUserInfo!._id"></app-tasks>
+        }
+
+    </ul>
+</main>
